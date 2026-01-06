@@ -1,0 +1,17 @@
+RuleSet,com.rulesengine.rules.decisiontable
+RuleTable,Account Tier Rules
+CONDITION,CONDITION,CONDITION,ACTION,ACTION
+Transaction(accountTier,amount,isVIP,status == "PENDING"),Transaction(accountTier,amount,isVIP,status == "PENDING"),Transaction(accountTier,amount,isVIP,status == "PENDING"),Transaction setStatus,Transaction setRiskScore
+accountTier == "BRONZE",amount <= 1000,isVIP == false,APPROVED,0
+accountTier == "BRONZE",amount > 1000,isVIP == false,PENDING_REVIEW,25
+accountTier == "SILVER",amount <= 5000,isVIP == false,APPROVED,0
+accountTier == "SILVER",amount > 5000,isVIP == false,PENDING_REVIEW,15
+accountTier == "GOLD",amount <= 20000,isVIP == false,APPROVED,-10
+accountTier == "GOLD",amount > 20000,isVIP == false,PENDING_REVIEW,10
+accountTier == "PLATINUM",amount <= 50000,isVIP == false,APPROVED,-15
+accountTier == "PLATINUM",amount > 50000,isVIP == false,PENDING_REVIEW,5
+accountTier == "BRONZE",amount <= 5000,isVIP == true,APPROVED,-5
+accountTier == "SILVER",amount <= 20000,isVIP == true,APPROVED,-10
+accountTier == "GOLD",amount <= 100000,isVIP == true,APPROVED,-20
+accountTier == "PLATINUM",amount <= 200000,isVIP == true,APPROVED,-25
+

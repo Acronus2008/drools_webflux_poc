@@ -1,0 +1,56 @@
+package com.rulesengine.rules.decisiontable
+
+import com.rulesengine.model.Transaction
+import java.math.BigDecimal
+
+// Reglas generadas desde Decision Table: transaction-rules.csv
+// Estas reglas evalúan transacciones basadas en el monto
+
+rule "Transaction Amount Rule 1"
+    when
+        $transaction : Transaction(amount <= 100, status == "PENDING")
+    then
+        $transaction.setStatus("APPROVED");
+        $transaction.setRiskScore(0);
+end
+
+rule "Transaction Amount Rule 2"
+    when
+        $transaction : Transaction(amount > 100 && amount <= 500, status == "PENDING")
+    then
+        $transaction.setStatus("APPROVED");
+        $transaction.setRiskScore(5);
+end
+
+rule "Transaction Amount Rule 3"
+    when
+        $transaction : Transaction(amount > 500 && amount <= 1000, status == "PENDING")
+    then
+        $transaction.setStatus("PENDING_REVIEW");
+        $transaction.setRiskScore(15);
+end
+
+rule "Transaction Amount Rule 4"
+    when
+        $transaction : Transaction(amount > 1000 && amount <= 5000, status == "PENDING")
+    then
+        $transaction.setStatus("PENDING_REVIEW");
+        $transaction.setRiskScore(25);
+end
+
+rule "Transaction Amount Rule 5"
+    when
+        $transaction : Transaction(amount > 5000 && amount <= 10000, status == "PENDING")
+    then
+        $transaction.setStatus("PENDING_REVIEW");
+        $transaction.setRiskScore(40);
+end
+
+rule "Transaction Amount Rule 6"
+    when
+        $transaction : Transaction(amount > 10000, status == "PENDING")
+    then
+        $transaction.setStatus("REJECTED");
+        $transaction.setRiskScore(100);
+end
+

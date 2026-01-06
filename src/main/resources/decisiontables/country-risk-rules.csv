@@ -1,0 +1,15 @@
+RuleSet,com.rulesengine.rules.decisiontable
+RuleTable,Country Risk Assessment
+CONDITION,CONDITION,ACTION,ACTION
+Transaction(country,amount,status == "PENDING"),Transaction(country,amount,status == "PENDING"),Transaction setRiskScore,Transaction setStatus
+country == "USA",amount <= 5000,0,APPROVED
+country == "USA",amount > 5000,10,PENDING_REVIEW
+country == "CANADA",amount <= 3000,5,APPROVED
+country == "CANADA",amount > 3000,20,PENDING_REVIEW
+country == "MEXICO",amount <= 2000,15,APPROVED
+country == "MEXICO",amount > 2000,35,PENDING_REVIEW
+country == "HIGH_RISK_COUNTRY_1",amount <= 1000,30,PENDING_REVIEW
+country == "HIGH_RISK_COUNTRY_1",amount > 1000,50,REJECTED
+country == "HIGH_RISK_COUNTRY_2",amount <= 1000,30,PENDING_REVIEW
+country == "HIGH_RISK_COUNTRY_2",amount > 1000,50,REJECTED
+

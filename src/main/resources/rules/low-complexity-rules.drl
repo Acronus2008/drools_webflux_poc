@@ -1,0 +1,42 @@
+package com.rulesengine.rules.low
+
+import com.rulesengine.model.Transaction
+import java.math.BigDecimal
+
+// Reglas de complejidad BAJA - Validaciones simples y directas
+
+rule "Reject transactions over 10000"
+    when
+        $transaction : Transaction(amount > 10000, status == "PENDING")
+    then
+        $transaction.setStatus("REJECTED");
+        $transaction.setRejectionReason("Amount exceeds maximum limit");
+        System.out.println("Rule fired: Reject transactions over 10000");
+end
+
+rule "Approve small transactions"
+    when
+        $transaction : Transaction(amount <= 100, status == "PENDING")
+    then
+        $transaction.setStatus("APPROVED");
+        $transaction.setRiskScore(0);
+        System.out.println("Rule fired: Approve small transactions");
+end
+
+rule "Reject negative amounts"
+    when
+        $transaction : Transaction(amount < 0, status == "PENDING")
+    then
+        $transaction.setStatus("REJECTED");
+        $transaction.setRejectionReason("Negative amount not allowed");
+        System.out.println("Rule fired: Reject negative amounts");
+end
+
+rule "Set risk score for medium amounts"
+    when
+        $transaction : Transaction(amount > 100 && amount <= 1000, riskScore == null, status == "PENDING")
+    then
+        $transaction.setRiskScore(10);
+        System.out.println("Rule fired: Set risk score for medium amounts");
+end
+

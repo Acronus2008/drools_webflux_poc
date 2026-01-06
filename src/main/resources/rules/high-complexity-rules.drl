@@ -1,0 +1,135 @@
+package com.rulesengine.rules.high
+
+import com.rulesengine.model.Transaction
+import java.math.BigDecimal
+
+// Reglas de complejidad ALTA - Múltiples condiciones, cálculos complejos y lógica avanzada
+
+rule "Complex risk assessment - Multiple factors"
+    when
+        $transaction : Transaction(
+            amount > 3000,
+            accountAgeDays < 90,
+            failedTransactionsLastMonth > 2,
+            monthlyTransactionVolume < 1000,
+            status == "PENDING"
+        )
+    then
+        int riskIncrease = 40;
+        if ($transaction.getAmount().doubleValue() > 5000) {
+            riskIncrease += 20;
+        }
+        if ($transaction.getFailedTransactionsLastMonth() > 5) {
+            riskIncrease += 30;
+        }
+        $transaction.setRiskScore(($transaction.getRiskScore() != null ? $transaction.getRiskScore() : 0) + riskIncrease);
+        $transaction.setStatus("PENDING_REVIEW");
+        System.out.println("Rule fired: Complex risk assessment - Multiple factors");
+end
+
+rule "Advanced user profile analysis"
+    when
+        $transaction : Transaction(
+            userAge < 25 || userAge > 70,
+            accountAgeDays < 180,
+            amount > 2000,
+            status == "PENDING"
+        )
+    then
+        int ageRisk = $transaction.getUserAge() < 25 ? 20 : 15;
+        int accountRisk = $transaction.getAccountAgeDays() < 90 ? 25 : 10;
+        int totalRisk = ageRisk + accountRisk;
+        
+        if ($transaction.getAmount().doubleValue() > 5000) {
+            totalRisk += 15;
+        }
+        
+        $transaction.setRiskScore(($transaction.getRiskScore() != null ? $transaction.getRiskScore() : 0) + totalRisk);
+        $transaction.setStatus("PENDING_REVIEW");
+        System.out.println("Rule fired: Advanced user profile analysis");
+end
+
+rule "Complex transaction pattern detection"
+    when
+        $transaction : Transaction(
+            transactionType == "TRANSFER",
+            amount > 1000,
+            monthlyTransactionVolume > 5000,
+            failedTransactionsLastMonth == 0,
+            accountAgeDays > 365,
+            status == "PENDING"
+        )
+    then
+        // Cálculo complejo basado en múltiples factores
+        double volumeRatio = $transaction.getMonthlyTransactionVolume().doubleValue() / 10000.0;
+        double amountRatio = $transaction.getAmount().doubleValue() / 5000.0;
+        
+        int riskScore = 0;
+        if (volumeRatio > 2.0 && amountRatio < 0.5) {
+            riskScore = -10; // Usuario confiable con transacciones pequeñas
+        } else if (volumeRatio < 0.5 && amountRatio > 1.0) {
+            riskScore = 35; // Patrón sospechoso: poco volumen pero transacción grande
+        } else {
+            riskScore = 10; // Patrón normal
+        }
+        
+        $transaction.setRiskScore(($transaction.getRiskScore() != null ? $transaction.getRiskScore() : 0) + riskScore);
+        
+        if (riskScore > 30) {
+            $transaction.setStatus("PENDING_REVIEW");
+        } else {
+            $transaction.setStatus("APPROVED");
+        }
+        System.out.println("Rule fired: Complex transaction pattern detection");
+end
+
+rule "Multi-tier risk calculation with thresholds"
+    when
+        $transaction : Transaction(
+            status == "PENDING",
+            riskScore != null,
+            riskScore >= 0
+        )
+        eval($transaction.getRiskScore() >= 50 || 
+             ($transaction.getRiskScore() >= 30 && $transaction.getAmount().doubleValue() > 5000) ||
+             ($transaction.getRiskScore() >= 20 && $transaction.getAccountAgeDays() < 90 && $transaction.getAmount().doubleValue() > 3000))
+    then
+        $transaction.setStatus("REJECTED");
+        $transaction.setRejectionReason("High risk score: " + $transaction.getRiskScore());
+        System.out.println("Rule fired: Multi-tier risk calculation with thresholds");
+end
+
+rule "Final approval for low risk transactions"
+    when
+        $transaction : Transaction(
+            status == "PENDING",
+            riskScore != null,
+            riskScore < 20,
+            amount <= 10000
+        )
+    then
+        $transaction.setStatus("APPROVED");
+        System.out.println("Rule fired: Final approval for low risk transactions");
+end
+
+rule "Complex VIP and tier combination"
+    when
+        $transaction : Transaction(
+            isVIP == true,
+            accountTier in ("GOLD", "PLATINUM"),
+            accountAgeDays > 180,
+            failedTransactionsLastMonth == 0,
+            status == "PENDING"
+        )
+    then
+        double maxAmount = $transaction.getAccountTier().equals("PLATINUM") ? 100000.0 : 50000.0;
+        if ($transaction.getAmount().doubleValue() <= maxAmount) {
+            $transaction.setStatus("APPROVED");
+            $transaction.setRiskScore(($transaction.getRiskScore() != null ? $transaction.getRiskScore() : 0) - 25);
+        } else {
+            $transaction.setRiskScore(($transaction.getRiskScore() != null ? $transaction.getRiskScore() : 0) + 10);
+            $transaction.setStatus("PENDING_REVIEW");
+        }
+        System.out.println("Rule fired: Complex VIP and tier combination");
+end
+

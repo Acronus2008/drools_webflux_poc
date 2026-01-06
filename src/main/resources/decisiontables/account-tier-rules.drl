@@ -1,0 +1,104 @@
+package com.rulesengine.rules.decisiontable
+
+import com.rulesengine.model.Transaction
+import java.math.BigDecimal
+
+// Reglas generadas desde Decision Table: account-tier-rules.csv
+// Estas reglas evalúan transacciones basadas en el tier de cuenta y estado VIP
+
+rule "Account Tier BRONZE Non-VIP Low"
+    when
+        $transaction : Transaction(accountTier == "BRONZE", amount <= 1000, isVIP == false, status == "PENDING")
+    then
+        $transaction.setStatus("APPROVED");
+        $transaction.setRiskScore(($transaction.getRiskScore() != null ? $transaction.getRiskScore() : 0) + 0);
+end
+
+rule "Account Tier BRONZE Non-VIP High"
+    when
+        $transaction : Transaction(accountTier == "BRONZE", amount > 1000, isVIP == false, status == "PENDING")
+    then
+        $transaction.setStatus("PENDING_REVIEW");
+        $transaction.setRiskScore(($transaction.getRiskScore() != null ? $transaction.getRiskScore() : 0) + 25);
+end
+
+rule "Account Tier SILVER Non-VIP Low"
+    when
+        $transaction : Transaction(accountTier == "SILVER", amount <= 5000, isVIP == false, status == "PENDING")
+    then
+        $transaction.setStatus("APPROVED");
+        $transaction.setRiskScore(($transaction.getRiskScore() != null ? $transaction.getRiskScore() : 0) + 0);
+end
+
+rule "Account Tier SILVER Non-VIP High"
+    when
+        $transaction : Transaction(accountTier == "SILVER", amount > 5000, isVIP == false, status == "PENDING")
+    then
+        $transaction.setStatus("PENDING_REVIEW");
+        $transaction.setRiskScore(($transaction.getRiskScore() != null ? $transaction.getRiskScore() : 0) + 15);
+end
+
+rule "Account Tier GOLD Non-VIP Low"
+    when
+        $transaction : Transaction(accountTier == "GOLD", amount <= 20000, isVIP == false, status == "PENDING")
+    then
+        $transaction.setStatus("APPROVED");
+        $transaction.setRiskScore(($transaction.getRiskScore() != null ? $transaction.getRiskScore() : 0) - 10);
+end
+
+rule "Account Tier GOLD Non-VIP High"
+    when
+        $transaction : Transaction(accountTier == "GOLD", amount > 20000, isVIP == false, status == "PENDING")
+    then
+        $transaction.setStatus("PENDING_REVIEW");
+        $transaction.setRiskScore(($transaction.getRiskScore() != null ? $transaction.getRiskScore() : 0) + 10);
+end
+
+rule "Account Tier PLATINUM Non-VIP Low"
+    when
+        $transaction : Transaction(accountTier == "PLATINUM", amount <= 50000, isVIP == false, status == "PENDING")
+    then
+        $transaction.setStatus("APPROVED");
+        $transaction.setRiskScore(($transaction.getRiskScore() != null ? $transaction.getRiskScore() : 0) - 15);
+end
+
+rule "Account Tier PLATINUM Non-VIP High"
+    when
+        $transaction : Transaction(accountTier == "PLATINUM", amount > 50000, isVIP == false, status == "PENDING")
+    then
+        $transaction.setStatus("PENDING_REVIEW");
+        $transaction.setRiskScore(($transaction.getRiskScore() != null ? $transaction.getRiskScore() : 0) + 5);
+end
+
+rule "Account Tier BRONZE VIP"
+    when
+        $transaction : Transaction(accountTier == "BRONZE", amount <= 5000, isVIP == true, status == "PENDING")
+    then
+        $transaction.setStatus("APPROVED");
+        $transaction.setRiskScore(($transaction.getRiskScore() != null ? $transaction.getRiskScore() : 0) - 5);
+end
+
+rule "Account Tier SILVER VIP"
+    when
+        $transaction : Transaction(accountTier == "SILVER", amount <= 20000, isVIP == true, status == "PENDING")
+    then
+        $transaction.setStatus("APPROVED");
+        $transaction.setRiskScore(($transaction.getRiskScore() != null ? $transaction.getRiskScore() : 0) - 10);
+end
+
+rule "Account Tier GOLD VIP"
+    when
+        $transaction : Transaction(accountTier == "GOLD", amount <= 100000, isVIP == true, status == "PENDING")
+    then
+        $transaction.setStatus("APPROVED");
+        $transaction.setRiskScore(($transaction.getRiskScore() != null ? $transaction.getRiskScore() : 0) - 20);
+end
+
+rule "Account Tier PLATINUM VIP"
+    when
+        $transaction : Transaction(accountTier == "PLATINUM", amount <= 200000, isVIP == true, status == "PENDING")
+    then
+        $transaction.setStatus("APPROVED");
+        $transaction.setRiskScore(($transaction.getRiskScore() != null ? $transaction.getRiskScore() : 0) - 25);
+end
+

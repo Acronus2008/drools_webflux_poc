@@ -1,0 +1,88 @@
+package com.rulesengine.rules.decisiontable
+
+import com.rulesengine.model.Transaction
+import java.math.BigDecimal
+
+// Reglas generadas desde Decision Table: country-risk-rules.csv
+// Estas reglas evalúan el riesgo basado en el país de origen
+
+rule "Country Risk USA Low"
+    when
+        $transaction : Transaction(country == "USA", amount <= 5000, status == "PENDING")
+    then
+        $transaction.setRiskScore(($transaction.getRiskScore() != null ? $transaction.getRiskScore() : 0) + 0);
+        $transaction.setStatus("APPROVED");
+end
+
+rule "Country Risk USA High"
+    when
+        $transaction : Transaction(country == "USA", amount > 5000, status == "PENDING")
+    then
+        $transaction.setRiskScore(($transaction.getRiskScore() != null ? $transaction.getRiskScore() : 0) + 10);
+        $transaction.setStatus("PENDING_REVIEW");
+end
+
+rule "Country Risk CANADA Low"
+    when
+        $transaction : Transaction(country == "CANADA", amount <= 3000, status == "PENDING")
+    then
+        $transaction.setRiskScore(($transaction.getRiskScore() != null ? $transaction.getRiskScore() : 0) + 5);
+        $transaction.setStatus("APPROVED");
+end
+
+rule "Country Risk CANADA High"
+    when
+        $transaction : Transaction(country == "CANADA", amount > 3000, status == "PENDING")
+    then
+        $transaction.setRiskScore(($transaction.getRiskScore() != null ? $transaction.getRiskScore() : 0) + 20);
+        $transaction.setStatus("PENDING_REVIEW");
+end
+
+rule "Country Risk MEXICO Low"
+    when
+        $transaction : Transaction(country == "MEXICO", amount <= 2000, status == "PENDING")
+    then
+        $transaction.setRiskScore(($transaction.getRiskScore() != null ? $transaction.getRiskScore() : 0) + 15);
+        $transaction.setStatus("APPROVED");
+end
+
+rule "Country Risk MEXICO High"
+    when
+        $transaction : Transaction(country == "MEXICO", amount > 2000, status == "PENDING")
+    then
+        $transaction.setRiskScore(($transaction.getRiskScore() != null ? $transaction.getRiskScore() : 0) + 35);
+        $transaction.setStatus("PENDING_REVIEW");
+end
+
+rule "Country Risk HIGH_RISK_COUNTRY_1 Low"
+    when
+        $transaction : Transaction(country == "HIGH_RISK_COUNTRY_1", amount <= 1000, status == "PENDING")
+    then
+        $transaction.setRiskScore(($transaction.getRiskScore() != null ? $transaction.getRiskScore() : 0) + 30);
+        $transaction.setStatus("PENDING_REVIEW");
+end
+
+rule "Country Risk HIGH_RISK_COUNTRY_1 High"
+    when
+        $transaction : Transaction(country == "HIGH_RISK_COUNTRY_1", amount > 1000, status == "PENDING")
+    then
+        $transaction.setRiskScore(($transaction.getRiskScore() != null ? $transaction.getRiskScore() : 0) + 50);
+        $transaction.setStatus("REJECTED");
+end
+
+rule "Country Risk HIGH_RISK_COUNTRY_2 Low"
+    when
+        $transaction : Transaction(country == "HIGH_RISK_COUNTRY_2", amount <= 1000, status == "PENDING")
+    then
+        $transaction.setRiskScore(($transaction.getRiskScore() != null ? $transaction.getRiskScore() : 0) + 30);
+        $transaction.setStatus("PENDING_REVIEW");
+end
+
+rule "Country Risk HIGH_RISK_COUNTRY_2 High"
+    when
+        $transaction : Transaction(country == "HIGH_RISK_COUNTRY_2", amount > 1000, status == "PENDING")
+    then
+        $transaction.setRiskScore(($transaction.getRiskScore() != null ? $transaction.getRiskScore() : 0) + 50);
+        $transaction.setStatus("REJECTED");
+end
+

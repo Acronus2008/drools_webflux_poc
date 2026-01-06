@@ -1,0 +1,10 @@
+RuleSet,com.rulesengine.rules.decisiontable
+RuleTable,Transaction Amount Rules
+CONDITION,CONDITION,ACTION,ACTION
+Transaction(amount,status == "PENDING"),Transaction(amount,status == "PENDING"),Transaction setStatus,Transaction setRiskScore
+amount <= 100,status == "PENDING",APPROVED,0
+amount > 100 && amount <= 500,status == "PENDING",APPROVED,5
+amount > 500 && amount <= 1000,status == "PENDING",PENDING_REVIEW,15
+amount > 1000 && amount <= 5000,status == "PENDING",PENDING_REVIEW,25
+amount > 5000 && amount <= 10000,status == "PENDING",PENDING_REVIEW,40
+amount > 10000,status == "PENDING",REJECTED,100

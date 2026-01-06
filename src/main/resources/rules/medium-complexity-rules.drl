@@ -1,0 +1,84 @@
+package com.rulesengine.rules.medium
+
+import com.rulesengine.model.Transaction
+import java.math.BigDecimal
+
+// Reglas de complejidad MEDIA - Múltiples condiciones y cálculos
+
+rule "High risk transaction based on amount and type"
+    when
+        $transaction : Transaction(
+            amount > 5000,
+            transactionType == "WITHDRAWAL",
+            status == "PENDING"
+        )
+    then
+        $transaction.setRiskScore(($transaction.getRiskScore() != null ? $transaction.getRiskScore() : 0) + 50);
+        $transaction.setStatus("PENDING_REVIEW");
+        System.out.println("Rule fired: High risk transaction based on amount and type");
+end
+
+rule "Country-based restrictions"
+    when
+        $transaction : Transaction(
+            country in ("HIGH_RISK_COUNTRY_1", "HIGH_RISK_COUNTRY_2", "HIGH_RISK_COUNTRY_3"),
+            amount > 1000,
+            status == "PENDING"
+        )
+    then
+        $transaction.setRiskScore(($transaction.getRiskScore() != null ? $transaction.getRiskScore() : 0) + 30);
+        $transaction.setStatus("PENDING_REVIEW");
+        System.out.println("Rule fired: Country-based restrictions");
+end
+
+rule "VIP user benefits"
+    when
+        $transaction : Transaction(
+            isVIP == true,
+            amount <= 20000,
+            status == "PENDING"
+        )
+    then
+        $transaction.setStatus("APPROVED");
+        $transaction.setRiskScore(($transaction.getRiskScore() != null ? $transaction.getRiskScore() : 0) - 20);
+        System.out.println("Rule fired: VIP user benefits");
+end
+
+rule "Account tier based limits"
+    when
+        $transaction : Transaction(
+            accountTier == "BRONZE",
+            amount > 5000,
+            status == "PENDING"
+        )
+    then
+        $transaction.setRiskScore(($transaction.getRiskScore() != null ? $transaction.getRiskScore() : 0) + 25);
+        $transaction.setStatus("PENDING_REVIEW");
+        System.out.println("Rule fired: Account tier based limits");
+end
+
+rule "Account tier based limits - Gold and Platinum"
+    when
+        $transaction : Transaction(
+            accountTier in ("GOLD", "PLATINUM"),
+            amount <= 50000,
+            status == "PENDING"
+        )
+    then
+        $transaction.setStatus("APPROVED");
+        $transaction.setRiskScore(($transaction.getRiskScore() != null ? $transaction.getRiskScore() : 0) - 15);
+        System.out.println("Rule fired: Account tier based limits - Gold and Platinum");
+end
+
+rule "Currency conversion risk"
+    when
+        $transaction : Transaction(
+            currency != "USD",
+            amount > 2000,
+            status == "PENDING"
+        )
+    then
+        $transaction.setRiskScore(($transaction.getRiskScore() != null ? $transaction.getRiskScore() : 0) + 15);
+        System.out.println("Rule fired: Currency conversion risk");
+end
+
