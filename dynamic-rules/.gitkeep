@@ -1,0 +1,3 @@
+# Este directorio contiene reglas dinámicas que se pueden subir y compilar en tiempo de ejecución
+# Los archivos DRL y CSV colocados aquí se cargarán automáticamente al iniciar la aplicación
+
