@@ -1,0 +1,34 @@
+package com.rulesengine.rules.dynamic
+
+import com.rulesengine.model.Transaction
+import java.math.BigDecimal
+
+// Ejemplo de regla dinámica que se puede subir y compilar en tiempo de ejecución
+// Esta regla demuestra cómo se pueden agregar nuevas reglas sin reiniciar la aplicación
+
+rule "Dynamic Rule - High Value Transaction Approval"
+    when
+        $transaction : Transaction(
+            amount > 50000,
+            country == "USA",
+            accountTier in ("GOLD", "PLATINUM"),
+            status == "PENDING"
+        )
+    then
+        $transaction.setStatus("APPROVED");
+        $transaction.setRiskScore(($transaction.getRiskScore() != null ? $transaction.getRiskScore() : 0) - 30);
+        System.out.println("Dynamic Rule fired: High Value Transaction Approval");
+end
+
+rule "Dynamic Rule - Weekend Transaction Check"
+    when
+        $transaction : Transaction(
+            status == "PENDING",
+            timestamp != null
+        )
+        eval($transaction.getTimestamp().getDayOfWeek().getValue() >= 6) // Saturday or Sunday
+    then
+        $transaction.setRiskScore(($transaction.getRiskScore() != null ? $transaction.getRiskScore() : 0) + 10);
+        System.out.println("Dynamic Rule fired: Weekend Transaction Check");
+end
+
