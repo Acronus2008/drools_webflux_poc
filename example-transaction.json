@@ -1,0 +1,17 @@
+{
+  "id": "TX-EXAMPLE-001",
+  "userId": "USER-12345",
+  "amount": 5000,
+  "currency": "USD",
+  "transactionType": "PURCHASE",
+  "timestamp": "2024-01-15T10:30:00",
+  "merchantId": "MERCHANT-001",
+  "country": "USA",
+  "userAge": 35,
+  "accountAgeDays": 500,
+  "monthlyTransactionVolume": 15000,
+  "failedTransactionsLastMonth": 0,
+  "isVIP": true,
+  "accountTier": "GOLD"
+}
+
