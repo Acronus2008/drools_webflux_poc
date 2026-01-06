@@ -1,0 +1,34 @@
+services:
+  rules-engine:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rules-engine-poc
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SERVER_PORT=8080
+    volumes:
+      # Montar directorio para reglas dinámicas
+      - ./dynamic-rules:/app/dynamic-rules
+      # Montar directorio para logs
+      - ./logs:/app/logs
+    networks:
+      - rules-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 40s
+
+networks:
+  rules-network:
+    driver: bridge
+
+volumes:
+  dynamic-rules:
+  logs:
+
