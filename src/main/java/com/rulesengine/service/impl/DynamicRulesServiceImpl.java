@@ -37,9 +37,6 @@ public class DynamicRulesServiceImpl implements DynamicRulesService {
         createDynamicRulesDirectory();
     }
     
-    /**
-     * Inicializa las reglas dinámicas después de que la aplicación esté lista
-     */
     @EventListener(ApplicationReadyEvent.class)
     @Override
     public void initialize() {
@@ -47,10 +44,6 @@ public class DynamicRulesServiceImpl implements DynamicRulesService {
         loadDynamicRules();
     }
 
-    /**
-     * Carga y compila reglas dinámicas desde el directorio dynamic-rules
-     * @return true si la compilación fue exitosa
-     */
     @Override
     public synchronized boolean loadDynamicRules() {
         try {
