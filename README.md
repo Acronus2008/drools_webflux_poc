@@ -423,6 +423,7 @@ Ver [DOCKER.md](DOCKER.md) para más detalles sobre el uso en contenedores.
 7. **Watch Automático**: Implementar watch del directorio `dynamic-rules` para recarga automática
 
 ## Autor
+Alejandro Carlos Pantaleón Urbay
 
 POC desarrollada para demostrar la factibilidad de integración de Spring WebFlux con Drools.
 
